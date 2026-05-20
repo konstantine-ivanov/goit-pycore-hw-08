@@ -235,39 +235,42 @@ def birthdays(book: AddressBook):
         return "No birthdays in the next 7 days."
     return "\n".join(f"{e['name']}: {e['congratulation_date']}" for e in upcoming)
 
+def main():
+    book = load_data()  # getting data from file on load
+    print("Welcome to the assistant bot! For commands list type help")
 
-book = load_data()  # getting data from file on load
-print("Welcome to the assistant bot! For commands list type help")
+    while True:
+        user_input = input("Enter a command: ").strip()
+        if not user_input:
+            continue
 
-while True:
-    user_input = input("Enter a command: ").strip()
-    if not user_input:
-        continue
+        command, *args = parse_input(user_input)
 
-    command, *args = parse_input(user_input)
+        match command:
+            case "close" | "exit":
+                save_data(book)  # saving data to file on exit
+                print("Good bye!")
+                break
+            case "help":
+                print(show_help())
+            case "hello":
+                print("How can I help you?")
+            case "add":
+                print(add_contact(args, book))
+            case "change":
+                print(change_contact(args, book))
+            case "phone":
+                print(show_phone(args, book))
+            case "all":
+                print(show_all(book))
+            case "add-birthday":
+                print(add_birthday(args, book))
+            case "show-birthday":
+                print(show_birthday(args, book))
+            case "birthdays":
+                print(birthdays(book))
+            case _:
+                print("Invalid command. Type help for command list")
 
-    match command:
-        case "close" | "exit":
-            save_data(book)  # saving data to file on exit
-            print("Good bye!")
-            break
-        case "help":
-            print(show_help())
-        case "hello":
-            print("How can I help you?")
-        case "add":
-            print(add_contact(args, book))
-        case "change":
-            print(change_contact(args, book))
-        case "phone":
-            print(show_phone(args, book))
-        case "all":
-            print(show_all(book))
-        case "add-birthday":
-            print(add_birthday(args, book))
-        case "show-birthday":
-            print(show_birthday(args, book))
-        case "birthdays":
-            print(birthdays(book))
-        case _:
-            print("Invalid command. Type help for command list")
+if __name__ == "__main__":
+    main()
